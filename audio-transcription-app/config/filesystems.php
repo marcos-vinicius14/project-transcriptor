@@ -42,12 +42,12 @@ return [
 
         'minio' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'), // <--- CORRIGIDO
-            'secret' => env('AWS_SECRET_ACCESS_KEY'), // <--- CORRIGIDO
-            'region' => env('AWS_DEFAULT_REGION'), // <--- CORRIGIDO
-            'bucket' => env('AWS_BUCKET'), // <--- CORRIGIDO
-            'endpoint' => env('AWS_ENDPOINT'), // <--- CORRIGIDO
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false), // <--- CORRIGIDO
+            'key' => env('MINIO_KEY'),
+            'secret' => env('MINIO_SECRET'),
+            'region' => env('MINIO_REGION'),
+            'bucket' => env('MINIO_BUCKET'),
+            'endpoint' => env('MINIO_ENDPOINT'), 
+            'use_path_style_endpoint' => env('MINIO_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
 

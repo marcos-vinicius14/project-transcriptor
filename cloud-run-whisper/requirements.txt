@@ -1,0 +1,7 @@
+# cloud-run-whisper/requirements.txt
+
+openai-whisper
+boto3
+requests
+Flask         # Micro-framework web
+gunicorn      # Servidor WSGI de produção
