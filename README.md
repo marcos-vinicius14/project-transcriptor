@@ -9,59 +9,6 @@ Este é um sistema robusto projetado para transcrever arquivos de áudio longos 
 * **Escalabilidade:** O serviço de transcrição é um container independente no Google Cloud Run, que pode escalar horizontalmente para lidar com múltiplos áudios simultaneamente, sem impactar a performance da aplicação principal.  
 * **Segurança:** A comunicação entre os serviços é protegida. As chamadas para o serviço de transcrição são autenticadas via Google ID Tokens, e o endpoint de webhook que recebe os resultados é protegido por assinaturas HMAC.
 
-## **Arquitetura do Sistema**
-
-O fluxo de dados é orquestrado para garantir resiliência e desacoplamento entre os serviços.
-
-                  \+-------------------------+      \+-------------------------+  
-                  |                         |      |                         |  
-        \+--------\>|     Laravel App (API)   \+-----\>|      MinIO Storage      |  
-        |         |                         |      |   (Armazenamento S3)    |  
-        |         \+-------------------------+      \+-------------------------+  
-        |                    | (1) Upload                  | (2) Arquivo Original  
-\+-------+-------+            |                             |  
-|               |            | (3) Despacha Job            |  
-|    Usuário    |            v                             |  
-|               |    \+-------+--------+                    |  
-\+---------------+    |                |                    |  
-        ^            |   Redis Queue  |                    |  
-        |            |                |                    |  
-        |            \+-------+--------+                    |  
-        |                    |                             |  
-        |                    | (4) Processa Job            |  
-        |                    v                             |  
-        |         \+-------------------------+              |  
-        |         |                         |              |  
-        |         |   ProcessAudioJob (PHP) |--------------+  
-        |         |                         | (5) Baixa original,  
-        |         \+-------------------------+     divide e sobe chunks  
-        |                    |  
-        |                    | (6) Invoca serviço para cada chunk  
-        |                    v  
-        |         \+-------------------------+  
-        |         |                         |  
-        |         |  Cloud Run Service (Py) |  
-        |         |    (Flask \+ Whisper)    |  
-        |         \+-------------------------+  
-        |                    |  
-        |                    | (7) Envia resultado via Webhook  
-        |                    v  
-        |         \+-------------------------+  
-        |         |                         |  
-        |         | WebhookController (PHP) |  
-        |         | (com Middleware HMAC)   |  
-        |         \+-------------------------+  
-        |                    |  
-        |                    | (8) Despacha Job de Fusão  
-        |                    v  
-        |         \+-------------------------+      \+-------------------------+  
-        |         |                         |      |                         |  
-        |         |  MergeTranscriptionJob  \+-----\>|      MinIO Storage      |  
-        |         |        (PHP)            |      |   (Salva .txt Final)    |  
-        \+---------+                         |      \+-------------------------+  
-                  \+-------------------------+  
-                      (9) Notifica Usuário
-
 ## **Stack de Tecnologias**
 
 * **Backend Principal:** PHP 8.3+, Laravel 12  
