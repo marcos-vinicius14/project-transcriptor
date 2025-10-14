@@ -17,6 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [TranscriptionController::class, 'index'])->name('dashboard');
     Route::get('/transcriptions/{transcription}', [TranscriptionController::class, 'show'])->name('transcriptions.show');
 
+    Route::delete('transcriptions/{transcription}', [TranscriptionController::class, 'destroy'])->name('transcriptions.destroy');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

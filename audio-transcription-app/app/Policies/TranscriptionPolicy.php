@@ -45,7 +45,7 @@ class TranscriptionPolicy
      */
     public function delete(User $user, Transcription $transcription): bool
     {
-        return false;
+        return $user->id === $transcription->user_id;
     }
 
     /**
