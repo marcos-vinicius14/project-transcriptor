@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Google\Auth\Credentials\ServiceAccountCredentials;
-use Google\Auth\HttpHandler\HttpHandlerFactory;
+use Google\Auth\Middleware\AuthTokenMiddleware;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 
@@ -14,19 +14,19 @@ class CloudRunInvoker
         $cloudRunUrl = config('services.cloud_run.url');
 
         $credentials = new ServiceAccountCredentials(
-            'https://www.googleapis.com/auth/cloud-platform',
-            config('services.google.credentials_path')
+            null, 
+            config('services.google.credentials_path'),
+            null, 
+            $cloudRunUrl
         );
-        $credentials->setTargetAudience($cloudRunUrl);
 
-        $handler = HttpHandlerFactory::build(new Client());
-        $authedHttpHandler = $credentials->authorize($handler);
-
-        $client = new Client(['handler' => HandlerStack::create($authedHttpHandler)]);
+        $middleware = new AuthTokenMiddleware($credentials);
+        $stack = HandlerStack::create();
+        $stack->push($middleware);
+        $client = new Client(['handler' => $stack, 'auth' => 'google_auth']);
 
         $client->post($cloudRunUrl . '/transcribe', [
             'json' => $payload,
-            'timeout' => 0,
         ]);
     }
 

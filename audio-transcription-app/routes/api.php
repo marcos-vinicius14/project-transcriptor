@@ -20,7 +20,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::get('/me', [AuthController::class, 'me']);
 
-    Route::post('/transcription', [TranscriptionController::class, 'store']);
+    Route::post('/transcriptions', [TranscriptionController::class, 'store']);
+    Route::get('/transcriptions', [TranscriptionController::class, 'index']);
+    
+
     Route::post('/logout', [AuthController::class, 'logout']);
 
 });

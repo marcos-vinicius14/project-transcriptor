@@ -7,14 +7,28 @@ use App\Http\Requests\StoreTranscriptionRequest;
 use App\Jobs\ProcessAudioJob;
 use App\Models\Transcription;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Storage;
-
+use App\Http\Resources\TranscriptionResource; 
 class TranscriptionController extends Controller
 {
+    public function index(Request $request): AnonymousResourceCollection 
+    {
+        $user = $request->user();
+
+        $transcriptions = $user->transcriptions()
+                            ->latest()
+                            ->paginate(15);
+
+        return TranscriptionResource::collection($transcriptions);
+
+    }
     public function store(StoreTranscriptionRequest $request): JsonResponse
     {
-        $userId = $request->user()->id; //TODO: Em um cenário fora de testes, pegar o user ID real.
-        $audioFile = $request->file('audio');
+        $userId = Auth::id();
+        $audioFile = Request::file('audio');
 
         $transcription = Transcription::create([
             'user_id' => $userId,
