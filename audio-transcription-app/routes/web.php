@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\TranscriptionController;
+use App\Http\Controllers\Web\TranscriptionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 ;
