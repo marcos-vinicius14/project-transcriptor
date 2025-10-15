@@ -1,0 +1,10 @@
+name: transcriber-infra
+description: infra to whisper in transcriptor app
+runtime:
+  name: nodejs
+  options:
+    packagemanager: pnpm
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: gcp-typescript
